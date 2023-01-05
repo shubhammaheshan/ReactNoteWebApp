@@ -13,9 +13,7 @@ function CreateNote(props) {
   });
 
   const InputEvent = (event) => {
-
-    //const value = event.target.value;
-    //const name = event.target.name;
+  
 
     const {name , value} = event.target;
 
@@ -25,8 +23,6 @@ function CreateNote(props) {
         [name] : value,
       };
     });
-    console.log(note);
-
   };
 
   const addEvent = () => {
@@ -70,7 +66,7 @@ function CreateNote(props) {
             ></textarea>
 
           {expand ? 
-          <Button onClick={addEvent}>
+          <Button onClick={addEvent} disabled={!(note.title&&note.content) }>
             <AddIcon className="plus_sign" />
           </Button> : null}
         </form>
