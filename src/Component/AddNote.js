@@ -1,9 +1,10 @@
 import { useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
-import './App.css';
+import '../App.css';
+import { Link } from "react-router-dom";
 
-function CreateNote(props) {
+function AddNote(props) {
 
   const [expand, setExpand] = useState(false);
 
@@ -37,7 +38,7 @@ function CreateNote(props) {
       body: JSON.stringify(note)
     }).then((data) => {
       
-      props.passNote(note);
+      // props.passNote(note);
       setNote({
         title: "",
         content: "",
@@ -80,9 +81,10 @@ function CreateNote(props) {
           ></textarea>
 
           {expand ?
+          <Link to="/">
             <Button onClick={addEvent} disabled={!(note.title && note.content)}>
               <AddIcon className="plus_sign" />
-            </Button> : null}
+            </Button> </Link>: null}
         </form>
       </div>
     </>
@@ -90,4 +92,4 @@ function CreateNote(props) {
 
 };
 
-export default CreateNote;
+export default AddNote;

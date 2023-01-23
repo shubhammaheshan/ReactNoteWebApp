@@ -7,7 +7,7 @@ const NoteList = (props) => {
   };
   return (
     <>
-      <div className="note">
+      <div className="note" key={props.id}>
         <h1>{props.title}</h1>
         <br />
         <p>{props.content}</p>

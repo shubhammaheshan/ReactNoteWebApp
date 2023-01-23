@@ -146,3 +146,13 @@ footer {
   bottom: 20px;
   left: 20px;
 }
+.addNote_Container{
+  position: relative;
+  height: 100px;
+}
+.addNote_Container button{
+  position: absolute;
+  right: 50px;
+  top: 30px;
+  font-size: x-large;
+}

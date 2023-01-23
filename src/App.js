@@ -1,64 +1,25 @@
-import Header from './Header';
-import Footer from './Footer';
-import CreateNote from './CreateNote';
-import NoteList from './NoteList';
+import React from "react";
+import "./index.css"
+import Header from './Component/Header';
+import Footer from './Component/Footer';
+
 
 import './App.css';
-import useFetch from './useFetch';
 
+// router config
+import {Outlet} from 'react-router-dom'
 
-function App() {
-  const {addItem, isPending, error, setAddItem} = useFetch('http://localhost:8000/todo');
-
-  const addNote = (note) => {
-    setAddItem((prevData)=>{
-      return[...prevData,note];
-    })
-  };
-
-  const onDelete =(id)=>{
-
-    fetch('http://localhost:8000/todo/'+ id, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    }).then((data) => {
-      setAddItem((olddata)=>
-      olddata.filter((currdata,indx) => {
-        return currdata.id !== id;
-      })
-    );
-    }).catch((err) => {
-      console.log(err);
-    })
-  };
-
-  const callFetchData = ()=>{
-    
-  }
+const AppLayout = ()=> {
 
 
   return (
-    <>
-      <Header />
-      <CreateNote passNote={addNote}/>
-      {isPending && <div>Loading...</div>}
-      {error && <div>{error}</div>}
-      {addItem && addItem.map((val,index)=>{
-        return (<NoteList
-            key = {val.id}
-            id = {val.id}
-            title={val.title}
-            content={val.content}
-            deleteItem={onDelete}
-          />
-        );
-      })}
+      <div className="container">
+            <Header />
 
-      <Footer/> 
-    </>
+            <Outlet />
+            <Footer/>
+      </div>
   );
 }
 
-export default App;
+export default AppLayout;

@@ -1,14 +1,9 @@
 {
   "todo": [
     {
-      "title": "dsf",
-      "content": "dsf",
+      "title": "Fruits",
+      "content": "WaterMelon\nApple",
       "id": 1
-    },
-    {
-      "title": "sdf",
-      "content": "sdf",
-      "id": 2
     }
   ]
 }
