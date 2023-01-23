@@ -6,36 +6,50 @@ import './App.css';
 function CreateNote(props) {
 
   const [expand, setExpand] = useState(false);
-  
-  const [note,setNote] = useState({
-    title : "",
-    content : "",
+
+  const [note, setNote] = useState({
+    title: "",
+    content: "",
   });
 
   const InputEvent = (event) => {
-  
 
-    const {name , value} = event.target;
+
+    const { name, value } = event.target;
+
+
 
     setNote((prevData) => {
       return {
         ...prevData,
-        [name] : value,
+        [name]: value,
       };
     });
   };
 
   const addEvent = () => {
-    props.passNote(note);
-    setNote({
-      title : "",
-      content : "",
-    });
-    
+
+    fetch('http://localhost:8000/todo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(note)
+    }).then((data) => {
+      
+      props.passNote(note);
+      setNote({
+        title: "",
+        content: "",
+      });
+      
+    }).catch((err) => {
+      console.log(err);
+    })
   };
 
   const expandIt = () => {
-        setExpand(true);
+    setExpand(true);
   };
   const bToNormal = () => {
     setExpand(false);
@@ -45,35 +59,35 @@ function CreateNote(props) {
       <div className='main_note' onDoubleClick={bToNormal}>
         <form>
           {expand ?
-          <input 
-            type='text' 
-            name = "title" 
-            value={note.title} 
-            onChange={InputEvent}
-            placeholder='Title' 
-            autoComplete='off' 
+            <input
+              type='text'
+              name="title"
+              value={note.title}
+              onChange={InputEvent}
+              placeholder='Title'
+              autoComplete='off'
             /> : null}
 
 
-          <textarea 
-            rows="" 
-            column="" 
-            name = "content" 
-            value = {note.content} 
-            onChange={InputEvent} 
+          <textarea
+            rows=""
+            column=""
+            name="content"
+            value={note.content}
+            onChange={InputEvent}
             placeholder="Write a note..."
             onClick={expandIt}
-            ></textarea>
+          ></textarea>
 
-          {expand ? 
-          <Button onClick={addEvent} disabled={!(note.title&&note.content) }>
-            <AddIcon className="plus_sign" />
-          </Button> : null}
+          {expand ?
+            <Button onClick={addEvent} disabled={!(note.title && note.content)}>
+              <AddIcon className="plus_sign" />
+            </Button> : null}
         </form>
       </div>
     </>
   );
-  
+
 };
 
 export default CreateNote;

@@ -17,12 +17,26 @@ function App() {
   };
 
   const onDelete =(id)=>{
-    setAddItem((olddata)=>
+
+    fetch('http://localhost:8000/todo/'+ id, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }).then((data) => {
+      setAddItem((olddata)=>
       olddata.filter((currdata,indx) => {
-        return indx !== id;
+        return currdata.id !== id;
       })
     );
+    }).catch((err) => {
+      console.log(err);
+    })
   };
+
+  const callFetchData = ()=>{
+    
+  }
 
 
   return (
@@ -33,8 +47,8 @@ function App() {
       {error && <div>{error}</div>}
       {addItem && addItem.map((val,index)=>{
         return (<NoteList
-            key = {index}
-            id = {index}
+            key = {val.id}
+            id = {val.id}
             title={val.title}
             content={val.content}
             deleteItem={onDelete}
