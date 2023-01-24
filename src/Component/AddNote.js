@@ -1,11 +1,11 @@
 import { useState } from "react";
-import AddIcon from '@mui/icons-material/Add';
-import Button from '@mui/material/Button';
-import '../App.css';
+import AddIcon from "@mui/icons-material/Add";
+import Button from "@mui/material/Button";
+import "../App.css";
 import { Link } from "react-router-dom";
+import { services } from "../Api/api_manager";
 
 function AddNote(props) {
-
   const [expand, setExpand] = useState(false);
 
   const [note, setNote] = useState({
@@ -14,11 +14,7 @@ function AddNote(props) {
   });
 
   const InputEvent = (event) => {
-
-
     const { name, value } = event.target;
-
-
 
     setNote((prevData) => {
       return {
@@ -29,24 +25,17 @@ function AddNote(props) {
   };
 
   const addEvent = () => {
-
-    fetch('http://localhost:8000/todo', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(note)
-    }).then((data) => {
-      
-      // props.passNote(note);
-      setNote({
-        title: "",
-        content: "",
-      });
-      
-    }).catch((err) => {
-      console.log(err);
-    })
+    services
+      .addNote(note)
+      .then(function (response) {
+        if (response) {
+          setNote({
+            title: "",
+            content: "",
+          });
+        }
+      })
+      .catch(function (error) {});
   };
 
   const expandIt = () => {
@@ -57,18 +46,18 @@ function AddNote(props) {
   };
   return (
     <>
-      <div className='main_note' onDoubleClick={bToNormal}>
+      <div className="main_note" onDoubleClick={bToNormal}>
         <form>
-          {expand ?
+          {expand ? (
             <input
-              type='text'
+              type="text"
               name="title"
               value={note.title}
               onChange={InputEvent}
-              placeholder='Title'
-              autoComplete='off'
-            /> : null}
-
+              placeholder="Title"
+              autoComplete="off"
+            />
+          ) : null}
 
           <textarea
             rows=""
@@ -80,16 +69,20 @@ function AddNote(props) {
             onClick={expandIt}
           ></textarea>
 
-          {expand ?
-          <Link to="/">
-            <Button onClick={addEvent} disabled={!(note.title && note.content)}>
-              <AddIcon className="plus_sign" />
-            </Button> </Link>: null}
+          {expand ? (
+            <Link to="/">
+              <Button
+                onClick={addEvent}
+                disabled={!(note.title && note.content)}
+              >
+                <AddIcon className="plus_sign" />
+              </Button>{" "}
+            </Link>
+          ) : null}
         </form>
       </div>
     </>
   );
-
-};
+}
 
 export default AddNote;
