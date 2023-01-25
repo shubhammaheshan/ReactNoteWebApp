@@ -12,7 +12,7 @@ const Body = () => {
 
   useEffect(() => {
     services
-      .getAll()
+      .getAll({url : "/todo"})
       .then(function (response) {
         setAddItem(response?.data);
         setIsLoading(false);
@@ -26,7 +26,7 @@ const Body = () => {
 
   const onDelete = (id) => {
     services
-      .deleteById(id)
+      .deleteById({id : id, url : "/todo/"})
       .then(function (response) {
         setAddItem((value) =>
           value.filter((currdata, indx) => {

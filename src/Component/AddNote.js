@@ -26,9 +26,9 @@ function AddNote(props) {
 
   const addEvent = () => {
     services
-      .addNote(note)
+      .addNote({url : "/todo", note})
       .then(function (response) {
-        if (response) {
+        if (response.status == process.env.CREATED) {
           setNote({
             title: "",
             content: "",

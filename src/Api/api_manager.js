@@ -5,23 +5,23 @@ const axiosInstance = axios.create({
 });
 
 export const services = {
-  getAll: function () {
+  getAll: function (data) {
     return axiosInstance.request({
       method: "GET",
-      url: `/todo`,
+      url: data?.url,
     });
   },
-  deleteById: function (id) {
+  deleteById: function (data) {
     return axiosInstance.request({
       method: "DELETE",
-      url: `/todo/${id}`,
+      url: data?.url + data?.id,
     });
   },
   addNote: function (data) {
     return axiosInstance.request({
       method: "POST",
-      url: `/todo`,
-      data,
+      url: data?.url,
+      data: data?.note,
     });
   },
 };
