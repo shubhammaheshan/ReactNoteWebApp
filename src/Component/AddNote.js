@@ -11,8 +11,8 @@ function AddNote(props) {
   const [note, setNote] = useState({
     title: "",
     content: "",
+    date: "",
   });
-
   const InputEvent = (event) => {
     const { name, value } = event.target;
 
@@ -26,7 +26,7 @@ function AddNote(props) {
 
   const addEvent = () => {
     services
-      .addNote({url : "/todo", note})
+      .addNote({ url: "/todo", note })
       .then(function (response) {
         if (response.status == process.env.CREATED) {
           setNote({
@@ -44,19 +44,28 @@ function AddNote(props) {
   const bToNormal = () => {
     setExpand(false);
   };
+
   return (
     <>
       <div className="main_note" onDoubleClick={bToNormal}>
         <form>
           {expand ? (
-            <input
-              type="text"
-              name="title"
-              value={note.title}
-              onChange={InputEvent}
-              placeholder="Title"
-              autoComplete="off"
-            />
+            <>
+              <input
+                type="text"
+                name="title"
+                value={note.title}
+                onChange={InputEvent}
+                placeholder="Title"
+                autoComplete="off"
+              />
+              <input
+                type="date"
+                name="date"
+                value={note.date}
+                onChange={InputEvent}
+              />
+            </>
           ) : null}
 
           <textarea
@@ -73,7 +82,7 @@ function AddNote(props) {
             <Link to="/">
               <Button
                 onClick={addEvent}
-                disabled={!(note.title && note.content)}
+                disabled={!(note.title && note.content && note.date)}
               >
                 <AddIcon className="plus_sign" />
               </Button>{" "}

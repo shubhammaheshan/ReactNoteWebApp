@@ -1,8 +1,8 @@
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import './App.css';
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import "./App.css";
 
 const NoteList = (props) => {
-  const deleteNote = () =>{
+  const deleteNote = () => {
     props.deleteItem(props.id);
   };
   return (
@@ -10,14 +10,15 @@ const NoteList = (props) => {
       <div className="note" key={props.id}>
         <h1>{props.title}</h1>
         <br />
+        <h5>{props.date}</h5>
+        <br />
         <p>{props.content}</p>
         <button className="btn" onClick={deleteNote}>
-        <DeleteOutlineIcon className="deleteIcon"/>
+          <DeleteOutlineIcon className="deleteIcon" />
         </button>
       </div>
     </>
-);
-  
+  );
 };
 
 export default NoteList;

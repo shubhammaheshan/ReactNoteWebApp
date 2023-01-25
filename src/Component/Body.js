@@ -66,6 +66,7 @@ const Body = () => {
                 key={val.id}
                 title={val.title}
                 content={val.content}
+                date={val.date}
                 deleteItem={onDelete}
               />
             );
