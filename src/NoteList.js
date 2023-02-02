@@ -13,6 +13,8 @@ const NoteList = (props) => {
         <h5>{props.date}</h5>
         <br />
         <p>{props.content}</p>
+        <input type="checkbox" onClick={(todos) => {props.onChangeBox(props)}}
+          defaultChecked={props.status}/>
         <button className="btn" onClick={deleteNote}>
           <DeleteOutlineIcon className="deleteIcon" />
         </button>

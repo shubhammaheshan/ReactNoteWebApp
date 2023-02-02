@@ -12,6 +12,7 @@ function AddNote(props) {
     title: "",
     content: "",
     date: "",
+    status: false
   });
   const InputEvent = (event) => {
     const { name, value } = event.target;

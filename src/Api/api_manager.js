@@ -24,4 +24,11 @@ export const services = {
       data: data?.note,
     });
   },
+  updateNote: function (data) {
+    return axiosInstance.request({
+      method: "PUT",
+      url: data?.url + data?.id,
+      data: data?.note,
+    });
+  },
 };
