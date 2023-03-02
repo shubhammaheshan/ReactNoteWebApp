@@ -1,49 +1,58 @@
 import NoteList from "../NoteList";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { services } from "../Api/api_manager";
+import { useState } from "react";
+import { services } from "../Api/apiManager";
 import Skeleton from "./Skeleton";
+import { useQuery } from "react-query";
 
 const Body = () => {
-  const [addItem, setAddItem] = useState(null);
-  const [filterItem, setFilterItem] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [searchKeyword, setSearchKeyword] = useState("");
+  const [filterObj, setFilterObj] = useState({
+    page: 1,
+    pageLimit: 3,
+    sort: "",
+    order: "",
+    completed: "",
+    search_title: "",
+  });
 
-  useEffect(() => {
-    getNotesData();
-  }, []);
-
-  const getNotesData = () => {
-    services
-      .getAll({ url: "/todo" })
-      .then(function (response) {
-        setAddItem(response?.data);
-        setFilterItem(response?.data);
-        setIsLoading(false);
-        setError(null);
-      })
-      .catch(function (error) {
-        setError(error.message);
-        setIsLoading(false);
-      });
+  const generateurl = () => {
+    let url = `/todo?_page=${filterObj.page}&_limit=${filterObj.pageLimit}&_sort=${filterObj.sort}&_order=${filterObj.order}&title_like=${filterObj.search_title}`;
+    if (filterObj.completed) {
+      url = url + `&status=${filterObj.completed}`;
+    }
+    return url;
   };
+
+  const getNotesData = async () => {
+    return await services.getAll({
+      url: generateurl(),
+    });
+  };
+
+  const {
+    data: addItem,
+    isLoading,
+    error,
+    isPreviousData,
+    refetch,
+  } = useQuery(["getData", filterObj], getNotesData, {
+    staleTime: 10000,
+    keepPreviousData: true,
+  });
+  const hasNext = addItem?.length == filterObj.pageLimit;
 
   const onDelete = (id) => {
     services
       .deleteById({ id: id, url: "/todo/" })
       .then(function (response) {
         if (response.status == process.env.REACT_APP_UPDATED) {
-          getNotesData();
+          refetch();
         }
       })
-      .catch(function (error) {
-        setError(error.message);
-        setIsLoading(false);
-      });
+      .catch(function (error) {});
   };
-  const onChangeBox = (item) => {
+
+  const onCompletedNote = (item) => {
     services
       .updateNote({
         id: item.id,
@@ -52,57 +61,11 @@ const Body = () => {
       })
       .then(function (response) {
         if (response.status == process.env.REACT_APP_UPDATED) {
-          getNotesData();
+          refetch();
         }
       })
-      .catch(function (error) {
-        setError(error.message);
-        setIsLoading(false);
-      });
+      .catch(function (error) {});
   };
-  const handleChange = (e) => {
-    if (e.target.value) {
-      setFilterItem(
-        addItem.filter((data) => {
-          return data.status == e.target.value;
-        })
-      );
-    } else {
-      getNotesData();
-    }
-  };
-  function dynamicSort(property) {
-    var sortOrder = 1;
-
-    if (property[0] === "-") {
-      sortOrder = -1;
-      property = property.substr(1);
-    }
-
-    return function (a, b) {
-      if (sortOrder == -1) {
-        return b[property].localeCompare(a[property]);
-      } else {
-        return a[property].localeCompare(b[property]);
-      }
-    };
-  }
-  const functionSortBy = (e) => {
-    if (e.target.value) {
-      setFilterItem([...addItem].sort(dynamicSort(e.target.value)));
-    } else {
-      getNotesData();
-    }
-  };
-
-  function filterData(searchInput, rowData) {
-    let searchData = rowData.filter((item) => {
-      if (item?.title) {
-        return item?.title?.toLowerCase().includes(searchInput.toLowerCase());
-      }
-    });
-    return searchData;
-  }
 
   return (
     <>
@@ -115,24 +78,56 @@ const Body = () => {
         <input
           type="text"
           placeholder="Search Notes"
-          value={searchKeyword}
+          value={filterObj.search_title}
           onChange={(e) => {
-            setSearchKeyword(e.target.value);
-            let filtered = filterData(e.target.value, addItem);
-            setFilterItem(filtered);
+            setFilterObj((obj) => ({
+              ...obj,
+              search_title: e.target.value,
+            }));
           }}
         />
         Filter By :
-        <select onChange={handleChange}>
+        <select
+          onChange={(e) => {
+            const value = e.target.value;
+            if (value) {
+              setFilterObj((obj) => ({
+                ...obj,
+                completed: value == 1 ? "true" : "false",
+              }));
+            } else {
+              setFilterObj((obj) => ({
+                ...obj,
+                completed: "",
+              }));
+            }
+          }}
+        >
           <option value="">All</option>
           <option value="1">Completed</option>
           <option value="0">Not Completed</option>
         </select>
         Sort By :
-        <select onChange={functionSortBy}>
+        <select
+          onChange={(e) => {
+            if (e.target.value) {
+              setFilterObj((obj) => ({
+                ...obj,
+                sort: "title",
+                order: e.target.value,
+              }));
+            } else {
+              setFilterObj((obj) => ({
+                ...obj,
+                sort: "",
+                order: "",
+              }));
+            }
+          }}
+        >
           <option value="">All</option>
-          <option value="title">A-Z</option>
-          <option value="-title">Z-A</option>
+          <option value="asc">A-Z</option>
+          <option value="desc">Z-A</option>
         </select>
       </div>
       <div className="list_container">
@@ -146,8 +141,8 @@ const Body = () => {
           </div>
         )}
         {error && <div>{error}</div>}
-        {filterItem &&
-          filterItem.map((val, index) => {
+        {addItem &&
+          addItem.map((val, index) => {
             return (
               <NoteList
                 id={val.id}
@@ -157,10 +152,36 @@ const Body = () => {
                 date={val.date}
                 deleteItem={onDelete}
                 status={val.status}
-                onChangeBox={onChangeBox}
+                onChangeBox={onCompletedNote}
               />
             );
           })}
+      </div>
+      <div className="pagination">
+        <span>Current Page: {filterObj.page}</span>
+        <button
+          onClick={() => {
+            setFilterObj((obj) => ({
+              ...obj,
+              page: Math.max(obj.page - 1, 0),
+            }));
+          }}
+          disabled={filterObj.page === 1}
+        >
+          Previous Page
+        </button>
+        <button
+          onClick={() => {
+            if (!isPreviousData && hasNext) {
+              setFilterObj((obj) => ({ ...obj, page: obj.page + 1 }));
+            }
+          }}
+          // Disable the Next Page button until we know a next page is available
+          disabled={!hasNext}
+        >
+          Next Page
+        </button>
+        <div>{JSON.stringify(filterObj)}</div>
       </div>
     </>
   );
