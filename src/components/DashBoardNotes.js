@@ -8,12 +8,12 @@ import { generateurl } from "../helpers/url";
 
 const DashBoardNotes = () => {
   const [filterObj, setFilterObj] = useState({
-    page: 1,
-    pageLimit: 3,
-    sort: "",
-    order: "",
-    completed: "",
-    search_title: "",
+    _page: 1,
+    _limit: 3,
+    _sort: "",
+    _order: "",
+    status: "",
+    title_like: "",
   });
 
   const {
@@ -33,7 +33,7 @@ const DashBoardNotes = () => {
       keepPreviousData: true,
     }
   );
-  const hasNext = addItem?.length == filterObj.pageLimit;
+  const hasNext = addItem?.length == filterObj._limit;
 
 
   const onDelete = (id) => {
@@ -66,14 +66,14 @@ const DashBoardNotes = () => {
     if (e.target.value) {
       setFilterObj((obj) => ({
         ...obj,
-        sort: "title",
-        order: e.target.value,
+        _sort: "title",
+        _order: e.target.value,
       }));
     } else {
       setFilterObj((obj) => ({
         ...obj,
-        sort: "",
-        order: "",
+        _sort: "",
+        _order: "",
       }));
     }
   };
@@ -83,26 +83,26 @@ const DashBoardNotes = () => {
     if (value) {
       setFilterObj((obj) => ({
         ...obj,
-        completed: value == 1 ? "true" : "false",
+        status: value == 1 ? "true" : "false",
       }));
     } else {
       setFilterObj((obj) => ({
         ...obj,
-        completed: "",
+        status: "",
       }));
     }
   };
 
   const handleNextPage = () => {
     if (!isPreviousData && hasNext) {
-      setFilterObj((obj) => ({ ...obj, page: obj.page + 1 }));
+      setFilterObj((obj) => ({ ...obj, _page: obj._page + 1 }));
     }
   };
 
   const handlePreviousPage = () => {
     setFilterObj((obj) => ({
       ...obj,
-      page: Math.max(obj.page - 1, 0),
+      _page: Math.max(obj._page - 1, 0),
     }));
   };
 
@@ -117,11 +117,11 @@ const DashBoardNotes = () => {
         <input
           type="text"
           placeholder="Search Notes"
-          value={filterObj.search_title}
+          value={filterObj.title_like}
           onChange={(e) => {
             setFilterObj((obj) => ({
               ...obj,
-              search_title: e.target.value,
+              title_like: e.target.value,
             }));
           }}
         />
@@ -166,8 +166,8 @@ const DashBoardNotes = () => {
           })}
       </div>
       <div className="pagination">
-        <span>Current Page: {filterObj.page}</span>
-        <button onClick={handlePreviousPage} disabled={filterObj.page === 1}>
+        <span>Current Page: {filterObj._page}</span>
+        <button onClick={handlePreviousPage} disabled={filterObj._page === 1}>
           Previous Page
         </button>
         <button
