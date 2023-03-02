@@ -5,11 +5,11 @@ const axiosInstance = axios.create({
 });
 
 export const services = {
-  getAll: function (data) {
+  get: function (data) {
     return axiosInstance.request({
       method: "GET",
       url: data?.url,
-    });
+    }).then(response => response.data)
   },
   deleteById: function (data) {
     return axiosInstance.request({
@@ -25,6 +25,7 @@ export const services = {
     });
   },
   updateNote: function (data) {
+    console.log(data);
     return axiosInstance.request({
       method: "PUT",
       url: data?.url + data?.id,

@@ -1,7 +1,7 @@
 import React from "react";
 import "./index.css";
-import Header from "./Component/Header";
-import Footer from "./Component/Footer";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 import "./App.css";
 // router config
 import { Outlet } from "react-router-dom";

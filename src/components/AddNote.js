@@ -3,7 +3,7 @@ import AddIcon from "@mui/icons-material/Add";
 import Button from "@mui/material/Button";
 import "../App.css";
 import { Link } from "react-router-dom";
-import { services } from "../Api/apiManager";
+import { services } from "../apis/apiManager";
 
 function AddNote(props) {
   const [expand, setExpand] = useState(false);

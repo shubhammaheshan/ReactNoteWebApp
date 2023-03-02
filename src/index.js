@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import AppLayout from './App';
-import AddNote from './Component/AddNote';
-import Body from './Component/Body';
-import Error from './Component/Error';
+import AddNote from './components/AddNote';
+import Error from './components/Error';
 import './index.css';
+import DashBoardNotes from './components/DashBoardNotes';
 
 
 const router = createBrowserRouter([
@@ -16,7 +16,7 @@ const router = createBrowserRouter([
       children : [
         {
           path : '/',
-          element : <Body/>
+          element : <DashBoardNotes/>
         },
         {
           path : '/add_note',
