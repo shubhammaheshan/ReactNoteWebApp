@@ -15,7 +15,7 @@ const initialValues = {
 function AddNote() {
 const navigate = useNavigate();
 
-  const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
+  const { errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues,
       validationSchema: noteSchema,
@@ -48,7 +48,6 @@ const navigate = useNavigate();
               name="title"
               id="title"
               placeholder="Title"
-              value={values.title}
               onChange={handleChange}
               onBlur={handleBlur}
             />
@@ -64,7 +63,6 @@ const navigate = useNavigate();
               name="date"
               id="date"
               placeholder="Date"
-              value={values.date}
               onChange={handleChange}
               onBlur={handleBlur}
             />
@@ -79,11 +77,8 @@ const navigate = useNavigate();
               name="content"
               id="content"
               placeholder="Write a note..."
-              value={values.content}
               onChange={handleChange}
               onBlur={handleBlur}
-              rows=""
-              column=""
             />
             {errors.content && touched.content ? (
               <p className="form-error">{errors.content}</p>
