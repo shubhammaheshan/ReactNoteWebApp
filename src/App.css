@@ -27,17 +27,20 @@
 .my_notes h1{
   color: #34495e;
 }
-.my_notes p{
+/* .my_notes p{
   color: grey;
-}
+} */
 
 form{
   min-height: 50px;
-  color: #ecf0f1;
   padding: 15px 10px 5px 10px;
   box-shadow: 3px 5px 15px -5px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   position: relative;
+}
+
+.form-error{
+  color: red;
 }
 
 input {

@@ -1,94 +1,99 @@
-import { useState } from "react";
-import AddIcon from "@mui/icons-material/Add";
-import Button from "@mui/material/Button";
 import "../App.css";
-import { Link } from "react-router-dom";
 import { services } from "../apis/apiManager";
+import { useFormik } from "formik";
+import { noteSchema } from "../schemas";
+import { useNavigate } from "react-router-dom";
 
-function AddNote(props) {
-  const [expand, setExpand] = useState(false);
 
-  const [note, setNote] = useState({
-    title: "",
-    content: "",
-    date: "",
-    status: false
-  });
-  const InputEvent = (event) => {
-    const { name, value } = event.target;
+const initialValues = {
+  title: "",
+  content: "",
+  date: "",
+  status: false,
+};
 
-    setNote((prevData) => {
-      return {
-        ...prevData,
-        [name]: value,
-      };
+function AddNote() {
+const navigate = useNavigate();
+
+  const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
+    useFormik({
+      initialValues,
+      validationSchema: noteSchema,
+      onSubmit: (values, action) => {
+        addNoteData(values);
+        action.resetForm();
+      },
     });
-  };
 
-  const addEvent = () => {
+  const addNoteData = (value) => {
     services
-      .addNote({ url: "/todo", note })
+      .addNote({ url: "/todo", note: value })
       .then(function (response) {
-        if (response.status == process.env.CREATED) {
-          setNote({
-            title: "",
-            content: "",
-          });
+        console.log(response);
+        if(response.status == process.env.REACT_APP_CREATED){
+          navigate('/')
         }
       })
       .catch(function (error) {});
   };
 
-  const expandIt = () => {
-    setExpand(true);
-  };
-  const bToNormal = () => {
-    setExpand(false);
-  };
-
   return (
     <>
-      <div className="main_note" onDoubleClick={bToNormal}>
-        <form>
-          {expand ? (
-            <>
-              <input
-                type="text"
-                name="title"
-                value={note.title}
-                onChange={InputEvent}
-                placeholder="Title"
-                autoComplete="off"
-              />
-              <input
-                type="date"
-                name="date"
-                value={note.date}
-                onChange={InputEvent}
-              />
-            </>
-          ) : null}
+      <div className="main_note">
+        <form onSubmit={handleSubmit}>
+          <div className="input-block">
+            <input
+              type="text"
+              autoComplete="off"
+              name="title"
+              id="title"
+              placeholder="Title"
+              value={values.title}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.title && touched.title ? (
+              <p className="form-error">{errors.title}</p>
+            ) : null}
+          </div>
 
-          <textarea
-            rows=""
-            column=""
-            name="content"
-            value={note.content}
-            onChange={InputEvent}
-            placeholder="Write a note..."
-            onClick={expandIt}
-          ></textarea>
+          <div className="input-block">
+            <input
+              type="date"
+              autoComplete="off"
+              name="date"
+              id="date"
+              placeholder="Date"
+              value={values.date}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.date && touched.date ? (
+              <p className="form-error">{errors.date}</p>
+            ) : null}
+          </div>
 
-          {expand ? (
-            <Link to="/">
-              <Button
-                onClick={addEvent}
-                disabled={!(note.title && note.content && note.date)}
-              >
-                <AddIcon className="plus_sign" />
-              </Button>{" "}
-            </Link>
-          ) : null}
+          <div className="input-block">
+            <textarea
+              autoComplete="off"
+              name="content"
+              id="content"
+              placeholder="Write a note..."
+              value={values.content}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              rows=""
+              column=""
+            />
+            {errors.content && touched.content ? (
+              <p className="form-error">{errors.content}</p>
+            ) : null}
+          </div>
+
+            <button className="input-button" type="submit">
+              Add Note
+            </button>
+
         </form>
       </div>
     </>
